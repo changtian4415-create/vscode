@@ -1,0 +1,89 @@
+# Claude Code 跨机器同步 — 新机器设置指南
+
+> 将此文件交给新机器上的 Claude，让它帮你完成同步配置。
+
+---
+
+## 背景
+
+我已经在一台机器上配置了 Claude Code 聊天记录的多机同步方案：
+
+- **远程仓库**: `https://github.com/changtian4415-create/vscode.git`
+- **同步内容**: 会话记录（`.jsonl`）、会话状态、记忆（memory）、设置模板
+- **不同步内容**: `settings.json`（含 API Key，每台机器独立配置）
+
+---
+
+## 执行清单（交给 Claude）
+
+请在新机器上执行以下操作：
+
+### 1. 克隆仓库到 ~/.claude
+
+如果 `~/.claude` 目录已存在且有本地数据，先备份：
+
+```bash
+[ -d ~/.claude ] && mv ~/.claude ~/.claude.backup.$(date +%Y%m%d)
+```
+
+然后克隆：
+
+```bash
+git clone https://github.com/changtian4415-create/vscode.git ~/.claude
+```
+
+### 2. 创建 settings.json
+
+```bash
+cp ~/.claude/settings.template.json ~/.claude/settings.json
+```
+
+然后编辑 `~/.claude/settings.json`，将 `<你的 DeepSeek API Key>` 替换为真实密钥。
+
+**注意**：如果这台机器用的是不同的 API 或模型，记得同时修改 `ANTHROPIC_MODEL` 等字段。
+
+### 3. 创建日常同步别名
+
+在 `~/.bashrc` 或 `~/.zshrc` 中添加：
+
+```bash
+alias sync-claude='cd ~/.claude && git pull && git add -A && git commit -m "Sync $(date +%Y-%m-%d_%H:%M)" && git push'
+```
+
+然后 `source ~/.bashrc` 使其生效。
+
+### 4. 验证
+
+```bash
+ls -la ~/.claude/
+cat ~/.claude/.gitignore   # 确认 settings.json 在忽略列表中
+```
+
+---
+
+## 日常使用
+
+- **拉取最新**: `cd ~/.claude && git pull`
+- **上传本地**: `sync-claude`
+- **切换机器前**: 务必先 `sync-claude` 推送，再到另一台机器 `git pull`
+
+---
+
+## 文件结构说明
+
+```
+~/.claude/
+├── .gitignore              # 忽略规则（settings.json, telemetry, ide, *.lock）
+├── settings.template.json  # 设置模板（可安全同步）
+├── settings.json           # 真实设置（含 API Key，不同步）
+├── sessions/               # 会话状态
+├── projects/
+│   └── C--Users-Admin/     # 聊天记录（.jsonl）+ 记忆
+└── .last-cleanup
+```
+
+> 项目目录名 `C--Users-Admin` 是 Windows 用户路径的编码，macOS/Linux 上可能不同，Claude 会自动处理。
+
+---
+
+*创建于: 2026-06-07*
