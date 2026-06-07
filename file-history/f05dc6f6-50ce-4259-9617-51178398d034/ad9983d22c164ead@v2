@@ -1,0 +1,64 @@
+---
+name: ifind-mcp-setup
+description: 同花顺 iFinD MCP 桥接服务器的完整配置方案和步骤
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: f05dc6f6-50ce-4259-9617-51178398d034
+---
+
+# 同花顺 iFinD MCP 集成方案
+
+## 架构
+
+```
+Claude Code ↔ MCP stdio 服务器 (Python) ↔ iFinD HTTP API (quantapi.51ifind.com)
+```
+
+## 关键信息
+
+- **API 类型**: HTTP REST API（非 COM 接口）
+- **API 地址**: `https://quantapi.51ifind.com/api/v1/`
+- **认证方式**: refresh_token → access_token（access_token 有效期 7 天）
+- **Python**: `D:/APP/anaconda/python.exe`（Anaconda, Python 3.13.5）
+- **包依赖**: `mcp`, `requests`, `pywin32`（均已安装）
+
+## 文件清单
+
+| 文件 | 用途 |
+|------|------|
+| `C:\Users\Administrator\ifind_mcp_server.py` | MCP 服务器脚本（通用，无需修改） |
+| `C:\Users\Administrator\.claude\.mcp.json` | MCP 注册 + token 配置 |
+
+## 配置新 token 的步骤
+
+1. 用户在 iFinD 客户端获取 refresh_token（工具 → refresh_token查询）
+2. 更新 `C:\Users\Administrator\.claude\.mcp.json`，替换 `IFIND_REFRESH_TOKEN` 的值
+3. 重启 Claude Code
+
+## .mcp.json 模板
+
+```json
+{
+  "mcpServers": {
+    "ifind": {
+      "type": "stdio",
+      "command": "D:/APP/anaconda/python.exe",
+      "args": ["C:/Users/Administrator/ifind_mcp_server.py"],
+      "env": {
+        "IFIND_REFRESH_TOKEN": "<新token填这里>"
+      }
+    }
+  }
+}
+```
+
+## MCP 服务器提供的工具
+
+1. `ifind_token_status` — 查看 token 状态
+2. `ifind_real_time_quotation` — 实时行情
+3. `ifind_history_quotation` — 历史K线
+4. `ifind_basic_data` — 基础数据（ROE/PE/市值等）
+5. `ifind_date_sequence` — 时间序列
+6. `ifind_data_pool` — 板块成分股
+7. `ifind_search_indicator` — 搜索指标

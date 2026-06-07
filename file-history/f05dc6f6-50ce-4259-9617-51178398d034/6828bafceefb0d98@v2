@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "ifind": {
+      "type": "stdio",
+      "command": "D:/APP/anaconda/python.exe",
+      "args": ["C:/Users/Administrator/ifind_mcp_server.py"],
+      "env": {
+        "IFIND_REFRESH_TOKEN": "eyJzaWduX3RpbWUiOiIyMDI2LTA2LTA3IDExOjE3OjAwIn0=.eyJ1aWQiOiI3OTEwNzM3ODUiLCJ1c2VyIjp7InJlZnJlc2hUb2tlbkV4cGlyZWRUaW1lIjoiMjAyNi0wNi0yNiAxNToxMzo1OSIsInVzZXJJZCI6Ijc5MTA3Mzc4NSJ9fQ==.4B297188C60C5558D2D8F568C30CA3CA195B67E4BF2AA92983BF4FFED12014BF"
+      }
+    }
+  }
+}
