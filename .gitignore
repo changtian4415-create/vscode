@@ -1,0 +1,14 @@
+# 包含密钥，绝对不同步
+settings.json
+
+# 机器特定的运行时文件
+telemetry/
+ide/
+shell-snapshots/
+session-env/
+*.lock
+*.backup.*
+
+# 临时文件
+*.tmp
+*.swp
